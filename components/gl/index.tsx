@@ -1,9 +1,66 @@
-import { Perf } from "r3f-perf";
 import { Effects } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useControls } from "leva";
+import { useRef, useEffect } from "react";
 import { Particles } from "./particles";
-import { VignetteShader } from "./shaders/vignetteShader";
+import { CinematicShader } from "./shaders/cinematicShader";
+
+// Component to update time uniform for cinematic effects
+function CinematicEffects({
+  grainIntensity,
+  chromaticAberration,
+  bloomIntensity,
+  bloomThreshold,
+  contrast,
+  saturation,
+  exposure,
+  vignetteDarkness,
+  vignetteOffset,
+}: {
+  grainIntensity: number;
+  chromaticAberration: number;
+  bloomIntensity: number;
+  bloomThreshold: number;
+  contrast: number;
+  saturation: number;
+  exposure: number;
+  vignetteDarkness: number;
+  vignetteOffset: number;
+}) {
+  const { size } = useThree();
+  const shaderRef = useRef<typeof CinematicShader>(null);
+
+  useEffect(() => {
+    if (shaderRef.current) {
+      (shaderRef.current as any).uniforms.uResolution.value = [size.width, size.height];
+    }
+  }, [size]);
+
+  useFrame((state) => {
+    if (shaderRef.current) {
+      (shaderRef.current as any).uniforms.uTime.value = state.clock.elapsedTime;
+    }
+  });
+
+  return (
+    <Effects multisamping={0} disableGamma>
+      {/* @ts-ignore */}
+      <shaderPass
+        ref={shaderRef}
+        args={[CinematicShader]}
+        uniforms-uGrainIntensity-value={grainIntensity}
+        uniforms-uChromaticAberration-value={chromaticAberration}
+        uniforms-uBloomIntensity-value={bloomIntensity}
+        uniforms-uBloomThreshold-value={bloomThreshold}
+        uniforms-uContrast-value={contrast}
+        uniforms-uSaturation-value={saturation}
+        uniforms-uExposure-value={exposure}
+        uniforms-uVignetteDarkness-value={vignetteDarkness}
+        uniforms-uVignetteOffset-value={vignetteOffset}
+      />
+    </Effects>
+  );
+}
 
 export const GL = ({ hovering }: { hovering: boolean }) => {
   const {
@@ -17,8 +74,6 @@ export const GL = ({ hovering }: { hovering: boolean }) => {
     pointSize,
     opacity,
     planeScale,
-    vignetteDarkness,
-    vignetteOffset,
     useManualTime,
     manualTime,
   } = useControls("Particle System", {
@@ -35,12 +90,32 @@ export const GL = ({ hovering }: { hovering: boolean }) => {
       value: 512,
       options: [256, 512, 1024],
     },
-    showDebugPlane: { value: false },
-    vignetteDarkness: { value: 1.5, min: 0, max: 2, step: 0.1 },
-    vignetteOffset: { value: 0.4, min: 0, max: 2, step: 0.1 },
     useManualTime: { value: false },
     manualTime: { value: 0, min: 0, max: 50, step: 0.01 },
   });
+
+  const {
+    grainIntensity,
+    chromaticAberration,
+    bloomIntensity,
+    bloomThreshold,
+    contrast,
+    saturation,
+    exposure,
+    vignetteDarkness,
+    vignetteOffset,
+  } = useControls("Cinematic Effects", {
+    grainIntensity: { value: 0.035, min: 0, max: 0.15, step: 0.005 },
+    chromaticAberration: { value: 0.0012, min: 0, max: 0.005, step: 0.0002 },
+    bloomIntensity: { value: 0.16, min: 0, max: 0.5, step: 0.02 },
+    bloomThreshold: { value: 0.55, min: 0, max: 1, step: 0.05 },
+    contrast: { value: 1.06, min: 0.8, max: 1.3, step: 0.01 },
+    saturation: { value: 1.1, min: 0.5, max: 1.5, step: 0.02 },
+    exposure: { value: 1.0, min: 0.7, max: 1.3, step: 0.02 },
+    vignetteDarkness: { value: 0.7, min: 0, max: 1.5, step: 0.05 },
+    vignetteOffset: { value: 0.45, min: 0, max: 1, step: 0.05 },
+  });
+
   return (
     <div id="webgl">
       <Canvas
@@ -53,7 +128,6 @@ export const GL = ({ hovering }: { hovering: boolean }) => {
           far: 300,
         }}
       >
-        {/* <Perf position="top-left" /> */}
         <color attach="background" args={["#000"]} />
         <Particles
           speed={speed}
@@ -70,13 +144,17 @@ export const GL = ({ hovering }: { hovering: boolean }) => {
           manualTime={manualTime}
           introspect={hovering}
         />
-        <Effects multisamping={0} disableGamma>
-          <shaderPass
-            args={[VignetteShader]}
-            uniforms-darkness-value={vignetteDarkness}
-            uniforms-offset-value={vignetteOffset}
-          />
-        </Effects>
+        <CinematicEffects
+          grainIntensity={grainIntensity}
+          chromaticAberration={chromaticAberration}
+          bloomIntensity={bloomIntensity}
+          bloomThreshold={bloomThreshold}
+          contrast={contrast}
+          saturation={saturation}
+          exposure={exposure}
+          vignetteDarkness={vignetteDarkness}
+          vignetteOffset={vignetteOffset}
+        />
       </Canvas>
     </div>
   );

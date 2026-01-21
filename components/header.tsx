@@ -2,57 +2,93 @@
 
 import Link from "next/link";
 import { MobileMenu } from "./mobile-menu";
-import { ChevronDown } from "lucide-react";
-import { Button } from "./ui/button";
+import { Logo } from "./logo";
+import { useEffect, useState } from "react";
 
 export const Header = () => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Check initial state
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="fixed z-50 pt-6 md:pt-8 top-0 left-0 w-full">
-      <header className="flex items-center justify-between container">
-        {/* Left Navigation */}
-        <nav className="flex max-lg:hidden items-center gap-x-10">
+    <div
+      className={`fixed z-50 top-0 left-0 w-full transition-all duration-300 ${scrolled
+        ? "pt-3 md:pt-4 bg-black/80 backdrop-blur-xl border-b border-amber-500/10"
+        : "pt-6 md:pt-8"
+        }`}
+    >
+      <header className="flex items-center justify-between container pb-3">
+        {/* Logo */}
+        <div className="flex-shrink-0">
+          <Logo />
+        </div>
+
+        {/* Center Navigation */}
+        <nav className="flex max-lg:hidden items-center gap-x-12 absolute left-1/2 -translate-x-1/2">
           <Link
-            className="inline-block text-sm text-foreground/70 hover:text-foreground/100 duration-150 transition-colors ease-out"
-            href="#about"
+            className={`inline-block text-lg font-sentient font-medium tracking-wide transition-colors duration-150 ease-out ${scrolled
+              ? "text-amber-200/90 hover:text-amber-100"
+              : "text-foreground/80 hover:text-foreground"
+              }`}
+            href="/about"
           >
             About
           </Link>
-          <button className="inline-flex items-center gap-1 text-sm text-foreground/70 hover:text-foreground/100 duration-150 transition-colors ease-out">
-            Trading
-            <ChevronDown className="w-4 h-4" />
-          </button>
           <Link
-            className="inline-block text-sm text-foreground/70 hover:text-foreground/100 duration-150 transition-colors ease-out"
-            href="#contact"
+            className={`inline-block text-lg font-sentient font-medium tracking-wide transition-colors duration-150 ease-out ${scrolled
+              ? "text-amber-200/90 hover:text-amber-100"
+              : "text-foreground/80 hover:text-foreground"
+              }`}
+            href="/trading"
+          >
+            Features
+          </Link>
+          <Link
+            className={`inline-block text-lg font-sentient font-medium tracking-wide transition-colors duration-150 ease-out ${scrolled
+              ? "text-amber-200/90 hover:text-amber-100"
+              : "text-foreground/80 hover:text-foreground"
+              }`}
+            href="/pricing"
+          >
+            Pricing
+          </Link>
+          <Link
+            className={`inline-block text-lg font-sentient font-medium tracking-wide transition-colors duration-150 ease-out ${scrolled
+              ? "text-amber-200/90 hover:text-amber-100"
+              : "text-foreground/80 hover:text-foreground"
+              }`}
+            href="/contact"
           >
             Contact
           </Link>
           <Link
-            className="inline-block text-sm text-foreground/70 hover:text-foreground/100 duration-150 transition-colors ease-out"
-            href="#faq"
+            className={`inline-block text-lg font-sentient font-medium tracking-wide transition-colors duration-150 ease-out ${scrolled
+              ? "text-amber-200/90 hover:text-amber-100"
+              : "text-foreground/80 hover:text-foreground"
+              }`}
+            href="/faq"
           >
             FAQ
           </Link>
-          <button className="inline-flex items-center gap-1 text-sm text-foreground/70 hover:text-foreground/100 duration-150 transition-colors ease-out">
-            ENG
-            <ChevronDown className="w-4 h-4" />
-          </button>
         </nav>
 
         {/* Right Buttons */}
         <div className="flex max-lg:hidden items-center gap-2">
-          <Button 
-            variant="ghost" 
-            className="rounded-full text-foreground/80 hover:text-foreground hover:bg-white/10 px-5 py-2 text-sm"
+          <Link
+            href="/download"
+            className="rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-sentient font-semibold hover:opacity-90 px-7 py-3 text-base transition-all duration-150 shadow-lg shadow-amber-500/20"
           >
-            Login
-          </Button>
-          <Button 
-            variant="outline" 
-            className="rounded-full border-foreground/20 bg-white text-black hover:bg-white/90 px-5 py-2 text-sm"
-          >
-            Sign up
-          </Button>
+            Download App
+          </Link>
         </div>
         <MobileMenu />
       </header>

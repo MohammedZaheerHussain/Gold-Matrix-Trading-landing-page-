@@ -28,11 +28,11 @@
   margin-inline: auto;
   padding-inline: 1rem;
 
-  @media (width >= 768px) {
+  @media (width >=768px) {
     padding-inline: 2rem;
   }
 
-  @media (width >= 1280px) {
+  @media (width >=1280px) {
     padding-inline: 3rem;
   }
 }
@@ -67,4 +67,232 @@ body {
 #webgl canvas {
   width: 100%;
   height: 100%;
+}
+
+/* Hide Next.js dev indicator */
+nextjs-portal {
+  display: none !important;
+}
+
+/* Trading Candle Animations */
+@keyframes candle-pulse-1 {
+
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+
+  50% {
+    transform: translateY(-2px) scaleY(1.1);
+  }
+}
+
+@keyframes candle-pulse-2 {
+
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+
+  50% {
+    transform: translateY(2px) scaleY(0.9);
+  }
+}
+
+@keyframes candle-pulse-3 {
+
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+
+  50% {
+    transform: translateY(-3px) scaleY(1.15);
+  }
+}
+
+@keyframes candle-pulse-4 {
+
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+
+  50% {
+    transform: translateY(-1px) scaleY(1.05);
+  }
+}
+
+.animate-candle-1 {
+  animation: candle-pulse-1 2.5s ease-in-out infinite;
+  animation-delay: 0s;
+}
+
+.animate-candle-2 {
+  animation: candle-pulse-2 2s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+
+.animate-candle-3 {
+  animation: candle-pulse-3 2.2s ease-in-out infinite;
+  animation-delay: 0.6s;
+}
+
+.animate-candle-4 {
+  animation: candle-pulse-4 2.8s ease-in-out infinite;
+  animation-delay: 0.9s;
+}
+
+/* Trading Chart Background Animations */
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes candle-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+}
+
+/* Floating animation for decorative elements */
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+@keyframes float-slow {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-25px);
+  }
+}
+
+.animate-candle-fade {
+  animation: candle-fade 0.5s ease-out forwards;
+}
+
+.animate-draw-line {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: draw-line 3s ease-out forwards;
+}
+
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Candlestick Chart Animations - Slow & Cinematic */
+.chart-candle {
+  animation: candle-enter 1.5s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes candle-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(15px) scaleY(0.7);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+.candle-body {
+  animation: candle-pulse 8s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes candle-pulse {
+
+  0%,
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+
+  30% {
+    transform: scaleY(1.03);
+    opacity: 0.9;
+  }
+
+  60% {
+    transform: scaleY(0.97);
+    opacity: 1;
+  }
+
+  80% {
+    transform: scaleY(1.02);
+    opacity: 0.95;
+  }
+}
+
+.candle-wick {
+  animation: wick-flicker 6s ease-in-out infinite;
+}
+
+@keyframes wick-flicker {
+
+  0%,
+  100% {
+    opacity: 0.08;
+  }
+
+  50% {
+    opacity: 0.12;
+  }
+}
+
+.candle-glow {
+  animation: glow-pulse 7s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    opacity: 0.03;
+    filter: blur(2px);
+  }
+
+  50% {
+    opacity: 0.08;
+    filter: blur(5px);
+  }
+}
+
+/* Slow down the line draw animation */
+.animate-draw-line {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: draw-line 5s ease-out forwards;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 6s ease-in-out infinite;
 }
